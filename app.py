@@ -32,6 +32,19 @@ endpoint_secret = os.getenv("ENDPOINT_SECRET")
 app = Flask(__name__)
 
 
+# Routes
+@app.route("/")
+def hello_world():
+    return "<p>Hello, World!</p>"
+
+
+@app.route("/subscription_schedules", methods=["GET"])
+def get_subscription_schedules():
+    schedules = stripe.SubscriptionSchedule.list(limit=3)
+    # print(f"Schedules: {schedules}")
+    return jsonify(schedules)
+
+
 @app.route("/webhook", methods=["POST"])
 def webhook():
     event = None
@@ -113,3 +126,7 @@ def webhook():
         print("Unhandled event type {}".format(event["type"]))
 
     return jsonify(success=True)
+
+
+if __name__ == "__main__":
+    app.run()
