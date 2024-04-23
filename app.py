@@ -9,7 +9,7 @@
 #   pip3 install stripe
 #
 # 3) Run the server on http://localhost:4242
-#   python3 -m flask run --port=4242
+#   flask run --port=4242
 
 
 from dotenv import load_dotenv
