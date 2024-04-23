@@ -8,7 +8,7 @@ import json
 import stripe
 from flask import Flask, jsonify, request
 from models import db
-from routes import subscription_schedules, webhooks
+from routes import subscription_schedules, coupons, webhooks
 
 
 load_dotenv()
@@ -25,6 +25,7 @@ app = Flask(__name__)
 
 # Register the Flask blueprints
 app.register_blueprint(subscription_schedules)
+app.register_blueprint(coupons)
 app.register_blueprint(webhooks)
 
 
