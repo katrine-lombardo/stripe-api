@@ -1,15 +1,5 @@
-# app.py
-#
-# Use this sample code to handle webhook events in your integration.
-#
-# 1) Paste this code into a new file (app.py)
-#
-# 2) Install dependencies
-#   pip3 install flask
-#   pip3 install stripe
-#
-# 3) Run the server on http://localhost:4242
-#   flask run --port=4242
+# Run the server on http://localhost:4242
+# >>> flask run --port=4242
 
 
 from dotenv import load_dotenv
@@ -17,8 +7,10 @@ import os
 import json
 import stripe
 from flask import Flask, jsonify, request
+from models import db
+from routes import subscription_schedules
 
-# Load environment variables
+
 load_dotenv()
 
 
@@ -32,17 +24,14 @@ endpoint_secret = os.getenv("ENDPOINT_SECRET")
 app = Flask(__name__)
 
 
+# Register the flask blueprints
+app.register_blueprint(subscription_schedules)
+
+
 # Routes
 @app.route("/")
 def hello_world():
     return "<p>Hello, World!</p>"
-
-
-@app.route("/subscription_schedules", methods=["GET"])
-def get_subscription_schedules():
-    schedules = stripe.SubscriptionSchedule.list(limit=3)
-    # print(f"Schedules: {schedules}")
-    return jsonify(schedules)
 
 
 @app.route("/webhook", methods=["POST"])
