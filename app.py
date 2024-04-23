@@ -14,21 +14,21 @@
 
 from dotenv import load_dotenv
 import os
-
-load_dotenv()
-
-from flask import Flask, jsonify, request
 import json
 import stripe
+from flask import Flask, jsonify, request
+
+# Load environment variables
+load_dotenv()
 
 
-# The library needs to be configured with your account's secret key.
-# Ensure the key is kept out of any version control system you might be using.
+# Configure Stripe API Key
 stripe.api_key = os.getenv("API_KEY")
 
-# This is your Stripe CLI webhook secret for testing your endpoint locally.
+# Get Stripe CLI Webhook Secret
 endpoint_secret = os.getenv("ENDPOINT_SECRET")
 
+# Initialise Flask App
 app = Flask(__name__)
 
 
@@ -48,9 +48,67 @@ def webhook():
         raise e
 
     # Handle the event
-    if event["type"] == "payment_intent.succeeded":
-        payment_intent = event["data"]["object"]
-    # ... handle other event types
+    ## PLANS
+    if event["type"] == "plan.created":
+        plan = event["data"]["object"]
+    elif event["type"] == "plan.deleted":
+        plan = event["data"]["object"]
+    elif event["type"] == "plan.updated":
+        plan = event["data"]["object"]
+
+    ## COUPONS
+    elif event["type"] == "coupon.created":
+        coupon = event["data"]["object"]
+    elif event["type"] == "coupon.deleted":
+        coupon = event["data"]["object"]
+    elif event["type"] == "coupon.updated":
+        coupon = event["data"]["object"]
+
+    ## CHARGES
+    elif event["type"] == "charge.captured":
+        charge = event["data"]["object"]
+    elif event["type"] == "charge.expired":
+        charge = event["data"]["object"]
+    elif event["type"] == "charge.failed":
+        charge = event["data"]["object"]
+    elif event["type"] == "charge.pending":
+        charge = event["data"]["object"]
+    elif event["type"] == "charge.refunded":
+        charge = event["data"]["object"]
+    elif event["type"] == "charge.succeeded":
+        charge = event["data"]["object"]
+    elif event["type"] == "charge.updated":
+        charge = event["data"]["object"]
+    elif event["type"] == "charge.dispute.closed":
+        dispute = event["data"]["object"]
+    elif event["type"] == "charge.dispute.created":
+        dispute = event["data"]["object"]
+    elif event["type"] == "charge.dispute.funds_reinstated":
+        dispute = event["data"]["object"]
+    elif event["type"] == "charge.dispute.funds_withdrawn":
+        dispute = event["data"]["object"]
+    elif event["type"] == "charge.dispute.updated":
+        dispute = event["data"]["object"]
+    elif event["type"] == "charge.refund.updated":
+        refund = event["data"]["object"]
+
+    ## SUBSCRIPTIONS
+    elif event["type"] == "subscription_schedule.aborted":
+        subscription_schedule = event["data"]["object"]
+    elif event["type"] == "subscription_schedule.canceled":
+        subscription_schedule = event["data"]["object"]
+    elif event["type"] == "subscription_schedule.completed":
+        subscription_schedule = event["data"]["object"]
+    elif event["type"] == "subscription_schedule.created":
+        subscription_schedule = event["data"]["object"]
+    elif event["type"] == "subscription_schedule.expiring":
+        subscription_schedule = event["data"]["object"]
+    elif event["type"] == "subscription_schedule.released":
+        subscription_schedule = event["data"]["object"]
+    elif event["type"] == "subscription_schedule.updated":
+        subscription_schedule = event["data"]["object"]
+
+    ## OTHER
     else:
         print("Unhandled event type {}".format(event["type"]))
 
