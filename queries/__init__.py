@@ -1,6 +1,6 @@
-from .subscription_schedules_queries import (
+from .subscription_schedules import (
     get_subscription_schedules,
     create_subscription_schedule,
 )
 
-from .coupons_queries import get_coupons, create_coupon
+from .coupons import get_coupons, create_coupon
