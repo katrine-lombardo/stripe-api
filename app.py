@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 import os
 import json
 import stripe
-from flask import Flask, jsonify, request
+from flask import Flask
 from models import db
 from routes import subscription_schedules, coupons, webhooks
 
