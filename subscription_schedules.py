@@ -25,10 +25,13 @@ db_name = os.getenv("DB_NAME")
 
 
 # EXTRACT
-def extract() -> dict:
+def extract() -> list:
+    extracted_data = []
     try:
-        data = stripe.SubscriptionSchedule.list(limit=100)["data"]
-        return data
+        data = stripe.SubscriptionSchedule.list(limit=10)
+        for subscription_schedule in data.auto_paging_iter():
+            extracted_data.append(subscription_schedule)
+        return extracted_data
     except requests.exceptions.RequestException as e:
         print(f"Error extracting data: {e}")
 
