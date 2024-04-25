@@ -12,11 +12,16 @@ from dotenv import load_dotenv
 from sqlalchemy import create_engine
 from sqlalchemy.exc import SQLAlchemyError
 
+
+# CONFIGURE
 load_dotenv()
 
 stripe.api_key = os.getenv("API_KEY")
 
-# CONFIGURE DATABASE
+db_user = os.getenv("DB_USER")
+db_password = os.getenv("DB_PASSWORD")
+db_host = os.getenv("DB_HOST")
+db_name = os.getenv("DB_NAME")
 
 
 # EXTRACT
@@ -49,10 +54,6 @@ def transform(data_list: list) -> pd.DataFrame:
 
 # LOAD
 def load(df: pd.DataFrame, table_name: str) -> None:
-    db_user = os.getenv("DB_USER")
-    db_password = os.getenv("DB_PASSWORD")
-    db_host = os.getenv("DB_HOST")
-    db_name = os.getenv("DB_NAME")
     engine = create_engine(f"postgresql://{db_user}:{db_password}@{db_host}/{db_name}")
     if not df.empty:
         try:
@@ -65,15 +66,19 @@ def load(df: pd.DataFrame, table_name: str) -> None:
 
 
 # EXECUTE
-try:
-    data = extract()
-    df = transform(data)
-    if not df.empty:
-        load(df, "subscription_schedules")
-    else:
-        print("Error: No data to load.")
+def main():
+    try:
+        data = extract()
+        df = transform(data)
+        if not df.empty:
+            load(df, "subscription_schedules")
+        else:
+            print("Error: No data to load.")
+    except SQLAlchemyError as e:
+        print(f"An error occurred with SQLAlchemy: {e}")
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
 
-except SQLAlchemyError as e:
-    print(f"An error occurred with SQLAlchemy: {e}")
-except Exception as e:
-    print(f"An unexpected error occurred: {e}")
+
+if __name__ == "__main__":
+    main()
